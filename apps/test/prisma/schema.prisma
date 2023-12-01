@@ -54,3 +54,23 @@ model Product {
   orders      Order[]
   updatedAt   DateTime @updatedAt
 }
+
+model User {
+  createdAt DateTime @default(now())
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Authentication {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  password  String?
+  roles     String?
+  updatedAt DateTime @updatedAt
+  username  String?
+}

@@ -3,6 +3,8 @@ import { OrderModule } from "./order/order.module";
 import { CustomerModule } from "./customer/customer.module";
 import { AddressModule } from "./address/address.module";
 import { ProductModule } from "./product/product.module";
+import { UserModule } from "./user/user.module";
+import { AuthenticationModule } from "./authentication/authentication.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -12,13 +14,20 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
+import { ACLModule } from "./auth/acl.module";
+import { AuthModule } from "./auth/auth.module";
+
 @Module({
   controllers: [],
   imports: [
+    ACLModule,
+    AuthModule,
     OrderModule,
     CustomerModule,
     AddressModule,
     ProductModule,
+    UserModule,
+    AuthenticationModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,

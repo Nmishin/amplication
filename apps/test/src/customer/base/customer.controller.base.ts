@@ -16,7 +16,11 @@ import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
+import * as nestAccessControl from "nest-access-control";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
 import { CustomerService } from "../customer.service";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { CustomerCreateInput } from "./CustomerCreateInput";
 import { CustomerWhereInput } from "./CustomerWhereInput";
 import { CustomerWhereUniqueInput } from "./CustomerWhereUniqueInput";
@@ -27,10 +31,24 @@ import { OrderFindManyArgs } from "../../order/base/OrderFindManyArgs";
 import { Order } from "../../order/base/Order";
 import { OrderWhereUniqueInput } from "../../order/base/OrderWhereUniqueInput";
 
+@swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
 export class CustomerControllerBase {
-  constructor(protected readonly service: CustomerService) {}
+  constructor(
+    protected readonly service: CustomerService,
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Customer })
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "create",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async create(@common.Body() data: CustomerCreateInput): Promise<Customer> {
     return await this.service.create({
       data: {
@@ -60,9 +78,18 @@ export class CustomerControllerBase {
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get()
   @swagger.ApiOkResponse({ type: [Customer] })
   @ApiNestedQuery(CustomerFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "read",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async findMany(@common.Req() request: Request): Promise<Customer[]> {
     const args = plainToClass(CustomerFindManyArgs, request.query);
     return this.service.findMany({
@@ -85,9 +112,18 @@ export class CustomerControllerBase {
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get("/:id")
   @swagger.ApiOkResponse({ type: Customer })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "read",
+    possession: "own",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async findOne(
     @common.Param() params: CustomerWhereUniqueInput
   ): Promise<Customer | null> {
@@ -117,9 +153,18 @@ export class CustomerControllerBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Customer })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "update",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async update(
     @common.Param() params: CustomerWhereUniqueInput,
     @common.Body() data: CustomerUpdateInput
@@ -165,6 +210,14 @@ export class CustomerControllerBase {
   @common.Delete("/:id")
   @swagger.ApiOkResponse({ type: Customer })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "delete",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async delete(
     @common.Param() params: CustomerWhereUniqueInput
   ): Promise<Customer | null> {
@@ -197,8 +250,14 @@ export class CustomerControllerBase {
     }
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get("/:id/orders")
   @ApiNestedQuery(OrderFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Order",
+    action: "read",
+    possession: "any",
+  })
   async findManyOrders(
     @common.Req() request: Request,
     @common.Param() params: CustomerWhereUniqueInput
@@ -238,6 +297,11 @@ export class CustomerControllerBase {
   }
 
   @common.Post("/:id/orders")
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "update",
+    possession: "any",
+  })
   async connectOrders(
     @common.Param() params: CustomerWhereUniqueInput,
     @common.Body() body: OrderWhereUniqueInput[]
@@ -255,6 +319,11 @@ export class CustomerControllerBase {
   }
 
   @common.Patch("/:id/orders")
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "update",
+    possession: "any",
+  })
   async updateOrders(
     @common.Param() params: CustomerWhereUniqueInput,
     @common.Body() body: OrderWhereUniqueInput[]
@@ -272,6 +341,11 @@ export class CustomerControllerBase {
   }
 
   @common.Delete("/:id/orders")
+  @nestAccessControl.UseRoles({
+    resource: "Customer",
+    action: "update",
+    possession: "any",
+  })
   async disconnectOrders(
     @common.Param() params: CustomerWhereUniqueInput,
     @common.Body() body: OrderWhereUniqueInput[]
