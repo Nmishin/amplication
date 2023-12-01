@@ -21,7 +21,15 @@ import { ProductList } from "./product/ProductList";
 import { ProductCreate } from "./product/ProductCreate";
 import { ProductEdit } from "./product/ProductEdit";
 import { ProductShow } from "./product/ProductShow";
-import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
+import { UserList } from "./user/UserList";
+import { UserCreate } from "./user/UserCreate";
+import { UserEdit } from "./user/UserEdit";
+import { UserShow } from "./user/UserShow";
+import { AuthenticationList } from "./authentication/AuthenticationList";
+import { AuthenticationCreate } from "./authentication/AuthenticationCreate";
+import { AuthenticationEdit } from "./authentication/AuthenticationEdit";
+import { AuthenticationShow } from "./authentication/AuthenticationShow";
+import { httpAuthProvider } from "./auth-provider/ra-auth-http";
 
 const App = (): React.ReactElement => {
   const [dataProvider, setDataProvider] = useState<DataProvider | null>(null);
@@ -42,7 +50,7 @@ const App = (): React.ReactElement => {
       <Admin
         title={"test"}
         dataProvider={dataProvider}
-        authProvider={jwtAuthProvider}
+        authProvider={httpAuthProvider}
         theme={theme}
         dashboard={Dashboard}
         loginPage={Login}
@@ -74,6 +82,20 @@ const App = (): React.ReactElement => {
           edit={ProductEdit}
           create={ProductCreate}
           show={ProductShow}
+        />
+        <Resource
+          name="User"
+          list={UserList}
+          edit={UserEdit}
+          create={UserCreate}
+          show={UserShow}
+        />
+        <Resource
+          name="Authentication"
+          list={AuthenticationList}
+          edit={AuthenticationEdit}
+          create={AuthenticationCreate}
+          show={AuthenticationShow}
         />
       </Admin>
     </div>
