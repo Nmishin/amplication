@@ -1,8 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { Authentication } from "../authentication/base/Authentication";
+import { User } from "../user/base/User";
 
 @ObjectType()
-export class AuthenticationInfo implements Partial<Authentication> {
+export class UserInfo implements Partial<User> {
   @Field(() => String)
   id!: string;
   @Field(() => String)

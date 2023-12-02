@@ -1,5 +1,5 @@
-import { AuthenticationInfo } from "./AuthenticationInfo";
+import { UserInfo } from "./UserInfo";
 
 export interface IAuthStrategy {
-  validate: (...any: any) => Promise<AuthenticationInfo>;
+  validate: (...any: any) => Promise<UserInfo>;
 }
