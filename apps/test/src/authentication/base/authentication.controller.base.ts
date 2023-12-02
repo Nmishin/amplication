@@ -16,11 +16,7 @@ import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
-import * as nestAccessControl from "nest-access-control";
-import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
 import { AuthenticationService } from "../authentication.service";
-import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
-import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { AuthenticationCreateInput } from "./AuthenticationCreateInput";
 import { AuthenticationWhereInput } from "./AuthenticationWhereInput";
 import { AuthenticationWhereUniqueInput } from "./AuthenticationWhereUniqueInput";
@@ -28,24 +24,10 @@ import { AuthenticationFindManyArgs } from "./AuthenticationFindManyArgs";
 import { AuthenticationUpdateInput } from "./AuthenticationUpdateInput";
 import { Authentication } from "./Authentication";
 
-@swagger.ApiBearerAuth()
-@common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
 export class AuthenticationControllerBase {
-  constructor(
-    protected readonly service: AuthenticationService,
-    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
-  ) {}
-  @common.UseInterceptors(AclValidateRequestInterceptor)
+  constructor(protected readonly service: AuthenticationService) {}
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Authentication })
-  @nestAccessControl.UseRoles({
-    resource: "Authentication",
-    action: "create",
-    possession: "any",
-  })
-  @swagger.ApiForbiddenResponse({
-    type: errors.ForbiddenException,
-  })
   async create(
     @common.Body() data: AuthenticationCreateInput
   ): Promise<Authentication> {
@@ -61,18 +43,9 @@ export class AuthenticationControllerBase {
     });
   }
 
-  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get()
   @swagger.ApiOkResponse({ type: [Authentication] })
   @ApiNestedQuery(AuthenticationFindManyArgs)
-  @nestAccessControl.UseRoles({
-    resource: "Authentication",
-    action: "read",
-    possession: "any",
-  })
-  @swagger.ApiForbiddenResponse({
-    type: errors.ForbiddenException,
-  })
   async findMany(@common.Req() request: Request): Promise<Authentication[]> {
     const args = plainToClass(AuthenticationFindManyArgs, request.query);
     return this.service.findMany({
@@ -87,18 +60,9 @@ export class AuthenticationControllerBase {
     });
   }
 
-  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get("/:id")
   @swagger.ApiOkResponse({ type: Authentication })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
-  @nestAccessControl.UseRoles({
-    resource: "Authentication",
-    action: "read",
-    possession: "own",
-  })
-  @swagger.ApiForbiddenResponse({
-    type: errors.ForbiddenException,
-  })
   async findOne(
     @common.Param() params: AuthenticationWhereUniqueInput
   ): Promise<Authentication | null> {
@@ -120,18 +84,9 @@ export class AuthenticationControllerBase {
     return result;
   }
 
-  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Authentication })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
-  @nestAccessControl.UseRoles({
-    resource: "Authentication",
-    action: "update",
-    possession: "any",
-  })
-  @swagger.ApiForbiddenResponse({
-    type: errors.ForbiddenException,
-  })
   async update(
     @common.Param() params: AuthenticationWhereUniqueInput,
     @common.Body() data: AuthenticationUpdateInput
@@ -161,14 +116,6 @@ export class AuthenticationControllerBase {
   @common.Delete("/:id")
   @swagger.ApiOkResponse({ type: Authentication })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
-  @nestAccessControl.UseRoles({
-    resource: "Authentication",
-    action: "delete",
-    possession: "any",
-  })
-  @swagger.ApiForbiddenResponse({
-    type: errors.ForbiddenException,
-  })
   async delete(
     @common.Param() params: AuthenticationWhereUniqueInput
   ): Promise<Authentication | null> {

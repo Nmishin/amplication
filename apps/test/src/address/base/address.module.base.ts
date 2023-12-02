@@ -10,9 +10,9 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { Module } from "@nestjs/common";
-import { ACLModule } from "../../auth/acl.module";
+
 @Module({
-  imports: [ACLModule],
-  exports: [ACLModule],
+  imports: [],
+  exports: [],
 })
 export class AddressModuleBase {}

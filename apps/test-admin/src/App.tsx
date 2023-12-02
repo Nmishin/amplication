@@ -29,7 +29,7 @@ import { AuthenticationList } from "./authentication/AuthenticationList";
 import { AuthenticationCreate } from "./authentication/AuthenticationCreate";
 import { AuthenticationEdit } from "./authentication/AuthenticationEdit";
 import { AuthenticationShow } from "./authentication/AuthenticationShow";
-import { httpAuthProvider } from "./auth-provider/ra-auth-http";
+import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
 const App = (): React.ReactElement => {
   const [dataProvider, setDataProvider] = useState<DataProvider | null>(null);
@@ -50,7 +50,7 @@ const App = (): React.ReactElement => {
       <Admin
         title={"test"}
         dataProvider={dataProvider}
-        authProvider={httpAuthProvider}
+        authProvider={jwtAuthProvider}
         theme={theme}
         dashboard={Dashboard}
         loginPage={Login}
