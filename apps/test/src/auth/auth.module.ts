@@ -7,14 +7,10 @@ import { AuthService } from "./auth.service";
 import { BasicStrategy } from "./basic/basic.strategy";
 import { PasswordService } from "./password.service";
 import { TokenService } from "./token.service";
-import { AuthenticationModule } from "../authentication/authentication.module";
+import { UserModule } from "../user/user.module";
 
 @Module({
-  imports: [
-    forwardRef(() => AuthenticationModule),
-    PassportModule,
-    SecretsManagerModule,
-  ],
+  imports: [forwardRef(() => UserModule), PassportModule, SecretsManagerModule],
   providers: [
     AuthService,
     BasicStrategy,
