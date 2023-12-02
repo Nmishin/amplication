@@ -1,8 +1,9 @@
+import { JsonValue } from "type-fest";
+
 export type Authentication = {
   createdAt: Date;
   id: string;
-  password: string | null;
-  roles: string | null;
+  roles: JsonValue;
   updatedAt: Date;
   username: string | null;
 };
