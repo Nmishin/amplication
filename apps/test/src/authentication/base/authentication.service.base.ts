@@ -11,14 +11,9 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { PrismaService } from "../../prisma/prisma.service";
 import { Prisma, Authentication } from "@prisma/client";
-import { PasswordService } from "../../auth/password.service";
-import { transformStringFieldUpdateInput } from "../../prisma.util";
 
 export class AuthenticationServiceBase {
-  constructor(
-    protected readonly prisma: PrismaService,
-    protected readonly passwordService: PasswordService
-  ) {}
+  constructor(protected readonly prisma: PrismaService) {}
 
   async count<T extends Prisma.AuthenticationCountArgs>(
     args: Prisma.SelectSubset<T, Prisma.AuthenticationCountArgs>
@@ -39,32 +34,12 @@ export class AuthenticationServiceBase {
   async create<T extends Prisma.AuthenticationCreateArgs>(
     args: Prisma.SelectSubset<T, Prisma.AuthenticationCreateArgs>
   ): Promise<Authentication> {
-    return this.prisma.authentication.create<T>({
-      ...args,
-
-      data: {
-        ...args.data,
-        password: await this.passwordService.hash(args.data.password),
-      },
-    });
+    return this.prisma.authentication.create<T>(args);
   }
   async update<T extends Prisma.AuthenticationUpdateArgs>(
     args: Prisma.SelectSubset<T, Prisma.AuthenticationUpdateArgs>
   ): Promise<Authentication> {
-    return this.prisma.authentication.update<T>({
-      ...args,
-
-      data: {
-        ...args.data,
-
-        password:
-          args.data.password &&
-          (await transformStringFieldUpdateInput(
-            args.data.password,
-            (password) => this.passwordService.hash(password)
-          )),
-      },
-    });
+    return this.prisma.authentication.update<T>(args);
   }
   async delete<T extends Prisma.AuthenticationDeleteArgs>(
     args: Prisma.SelectSubset<T, Prisma.AuthenticationDeleteArgs>
