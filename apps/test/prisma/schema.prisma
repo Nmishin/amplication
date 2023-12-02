@@ -70,7 +70,7 @@ model Authentication {
   createdAt DateTime @default(now())
   id        String   @id @default(cuid())
   password  String?
-  roles     String?
+  roles     Json
   updatedAt DateTime @updatedAt
-  username  String?
+  username  String?  @unique
 }

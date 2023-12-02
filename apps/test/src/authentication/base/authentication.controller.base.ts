@@ -54,7 +54,6 @@ export class AuthenticationControllerBase {
       select: {
         createdAt: true,
         id: true,
-        password: true,
         roles: true,
         updatedAt: true,
         username: true,
@@ -81,7 +80,6 @@ export class AuthenticationControllerBase {
       select: {
         createdAt: true,
         id: true,
-        password: true,
         roles: true,
         updatedAt: true,
         username: true,
@@ -109,7 +107,6 @@ export class AuthenticationControllerBase {
       select: {
         createdAt: true,
         id: true,
-        password: true,
         roles: true,
         updatedAt: true,
         username: true,
@@ -146,7 +143,6 @@ export class AuthenticationControllerBase {
         select: {
           createdAt: true,
           id: true,
-          password: true,
           roles: true,
           updatedAt: true,
           username: true,
@@ -182,7 +178,6 @@ export class AuthenticationControllerBase {
         select: {
           createdAt: true,
           id: true,
-          password: true,
           roles: true,
           updatedAt: true,
           username: true,
